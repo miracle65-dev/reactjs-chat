@@ -41,7 +41,8 @@ export default class ChatBody extends Component {
             prevProps.activeConversation.membersCount) ||
         this.props.callActive !== prevProps.callActive)
     ) {
-      var limit = 200;
+      var limit = 100;
+      let receiverType = CometChat.RECEIVER_TYPE.USER;
       let messagesRequest;
       let otherUID;
       if (this.props.activeConversation.guid !== undefined) {
@@ -50,6 +51,7 @@ export default class ChatBody extends Component {
           .setLimit(limit)
           .setGUID(otherUID)
           .build();
+        receiverType = CometChat.RECEIVER_TYPE.GROUP;
       } else {
         otherUID = this.props.activeConversation.uid;
         messagesRequest = new CometChat.MessagesRequestBuilder()
@@ -64,7 +66,9 @@ export default class ChatBody extends Component {
           if (!_.isEmpty(messages)) {
             const last_message = _.last(messages);
             if (last_message.sender.uid !== this.props.subjectUID) {
-              CometChat.markMessageAsRead(last_message);
+              var messageId = last_message.id;
+             
+              CometChat.markAsRead(messageId, last_message.sender.uid, receiverType);
             }
           }
           this.setState({ msghistory: messages });
@@ -88,8 +92,9 @@ export default class ChatBody extends Component {
       listenerID,
       new CometChat.MessageListener({
         onTextMessageReceived: textMessage => {
-         
+          console.log("textMessage",textMessage)
           let messageId;
+          let receiverType;
           let senderID;
           if (
             textMessage.receiverType === CometChat.RECEIVER_TYPE.USER &&
@@ -98,10 +103,13 @@ export default class ChatBody extends Component {
             // Handle text message
             senderID = textMessage.sender.uid;
             messageId = textMessage.id;
+            receiverType = textMessage.receiverType;
 
             if (senderID !== this.props.subjectUID) {
-              CometChat.markMessageAsRead(
-                textMessage
+              CometChat.markAsRead(
+                messageId,
+                senderID,
+                receiverType
               );
             }
             this.setState({
@@ -118,8 +126,9 @@ export default class ChatBody extends Component {
               // Handle text message
               senderID = textMessage.sender.uid;
               messageId = textMessage.id;
+              receiverType = textMessage.receiverType;
              
-              CometChat.markMessageAsRead(textMessage);
+              CometChat.markAsRead(messageId, senderID, receiverType);
               this.props.handleOnRecentMessageSent(messageId);
               this.setState({
                 msghistory: [...this.state.msghistory, textMessage]
@@ -131,6 +140,7 @@ export default class ChatBody extends Component {
         },
         onMediaMessageReceived: mediaMessage => {
           let messageId;
+          let receiverType;
           let senderID;
           // Handle media message
           if (mediaMessage.sender.uid === this.props.activeConversation.uid) {
@@ -140,9 +150,12 @@ export default class ChatBody extends Component {
             senderID = mediaMessage.sender.uid;
             messageId = mediaMessage.id;
             
+            receiverType = CometChat.RECEIVER_TYPE.USER;
             if (senderID !== this.props.subjectUID)
-              CometChat.markMessageAsRead(
-                mediaMessage
+              CometChat.markAsRead(
+                messageId,
+                senderID,
+                receiverType
               );
               this.props.handleOnRecentMessageSent(messageId);
 
@@ -154,9 +167,10 @@ export default class ChatBody extends Component {
               msghistory: [...this.state.msghistory, mediaMessage]
             });
             messageId = mediaMessage.id;
+            receiverType = CometChat.RECEIVER_TYPE.GROUP;
             senderID = mediaMessage.sender.uid;
             if (senderID !== this.props.subjectUID)
-              CometChat.markMessageAsRead(mediaMessage);
+              CometChat.markAsRead(messageId, senderID, receiverType);
 
               this.props.handleOnRecentMessageSent(messageId);
           }
@@ -282,6 +296,7 @@ export default class ChatBody extends Component {
           longitude: position.coords.longitude
          };
 
+      let customType = 'location'; 
       let receiverID;
       let receiverType;
 
@@ -292,7 +307,7 @@ export default class ChatBody extends Component {
         receiverID = this.props.activeConversation.uid;
         receiverType = CometChat.RECEIVER_TYPE.USER;
       }
-        var customMessage = new CometChat.CustomMessage(receiverID, receiverType, customData);
+        var customMessage = new CometChat.CustomMessage(receiverID, receiverType,customType,customData);
 
         if (this.state.editingMessageActive === true) {
           this.handleMessageUpdate(receiverID, receiverType, customMessage);
@@ -383,10 +398,10 @@ export default class ChatBody extends Component {
       }
 
       var messageText = this.state.newMessage;
+
       var textMessage = new CometChat.TextMessage(
         receiverID,
         messageText,
-        CometChat.MESSAGE_TYPE.TEXT,
         receiverType
       );
 

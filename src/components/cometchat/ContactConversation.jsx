@@ -153,7 +153,7 @@ const ContactConversation = props => {
             ) {
               attachmentData = m.attachment;
             }
-            else if(m.type === "custom" && m.data.customData.latitude !== undefined)
+            else if(m.type === "location")
             {
                 const lat = m.data.customData.latitude;
                 const lon = m.data.customData.longitude;

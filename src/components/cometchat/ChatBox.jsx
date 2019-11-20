@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import { CometChat } from "@cometchat-pro/chat";
 import _ from "lodash";
 import Contacts from "./Contacts";
+import Conversations from "./Conversations";
 import Groups from "./Groups";
 import ChatBody from "./ChatBody";
 import contactIcon from "../../resources/images/contact/Icon 24px@2x.png";
+import conversationIcon from "../../resources/images/recent/Icon 24px@2x.png";
 import groupIcon from "../../resources/images/group/ic_people_outline@2x.png";
 import {
   LISTENER_TYPING_INDICATOR,
@@ -28,7 +30,7 @@ import Fade from "react-reveal/Fade";
 class ChatBox extends Component {
   state = {
     activeConversation: [],
-    activeSidebar: 1, //1 = contacts, 2 = groups
+    activeSidebar: 3, //1 = contacts, 2 = groups, 3 = recent
     activeSubSidebar: false, // activeSidebar = 1 & true == blocked contacts, activeSidebar = 2 & true == group members,
     addNewGroupMember: false,
     typingIndicatorUIDs: [],
@@ -220,7 +222,7 @@ class ChatBox extends Component {
   };
 
   handleConversationClick = (id, conversationType) => {
-    
+    console.log(id)
     if(conversationType === "user")
     {
       this.handleContactClick(id);
@@ -363,12 +365,14 @@ class ChatBox extends Component {
   };
 
   render() {
+    let conversation_classes = "conversations px-4";
     let contact_classes = "contacts px-4";
     let blocked_contact_classes = "contacts px-4";
     let group_member_classes = "contacts px-4";
     let non_group_member_classes = "contacts px-4";
     let group_classes = "groups px-4";
     let contact_sidebar_classes = "py-3 flex-fill";
+    let conversation_sidebar_classes = "py-3 flex-fill";
     let group_sidebar_classes = "py-3 flex-fill";
     let activeTabName;
     let utilities_sidebar_show;
@@ -415,7 +419,7 @@ class ChatBox extends Component {
           </div>
         );
       }
-    } else {
+    } else if (this.state.activeSidebar === 1) {
       
       contact_sidebar_classes += " active";
       utilities_sidebar_show = this.state.showSidebarUtilitiesC
@@ -452,6 +456,18 @@ class ChatBox extends Component {
           <span className="">&nbsp; {sidebarContactsUtilityLabel}</span>
         </div>
       );
+    }
+    else
+    {
+      conversation_sidebar_classes += " active";
+
+      utilities_sidebar_show = this.state.showSidebarUtilitiesC
+        ? "contact-utilities-list bg-white"
+        : "contact-utilities-list bg-white hidden";
+
+        conversation_classes += " active";
+        activeTabName = "Conversations";
+
     }
 
     let chatSidebarVisiblity = "";
@@ -521,7 +537,21 @@ class ChatBox extends Component {
               </div>
             </div>
           </div>
-         
+          <div className={conversation_classes}>
+            <Conversations
+              handleConversationClick={this.handleConversationClick}
+              activeID={
+                this.state.activeConversation.uid !== undefined
+                  ? this.state.activeConversation.uid
+                  : this.state.activeConversation.guid !== undefined
+                  ? this.state.activeConversation.guid
+                  : ""
+              }
+              typingIndicatorUIDs={this.state.typingIndicatorUIDs}
+              onlineUsers={this.state.onlineUsers}
+              lastMessageId={this.state.lastMessageId}
+            />
+          </div>
           <div className={contact_classes}>
             <Contacts
               handleContactClick={this.handleContactClick}
@@ -619,6 +649,13 @@ class ChatBox extends Component {
           </Fade>
 
           <div className="sidebar-tabs d-flex">
+            <div
+              id="conversation-sidebar"
+              className={conversation_sidebar_classes}
+              onClick={e => this.handleTabClick(3)} >
+              <img src={conversationIcon} alt="conversationIcon" />
+              <p className="m-0 text-font-grey">Conversations</p>
+            </div>
             <div
               id="contacts-sidebar"
               className={contact_sidebar_classes}
