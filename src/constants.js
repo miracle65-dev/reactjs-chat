@@ -1,10 +1,11 @@
-//******** NOTE : THIS IS THE LATEST VERSION OF COMETCHAT - {currently - V2}, app keys created using v1.* are not supported. **********/
+
+//*******Note : This is V1 version of CometChat, and app keys created using versions v2 and above won't be supported
+
 /* 
     APP CONSTANTS
 */
 export const CC_APP_ID = "APP_ID"; //Get your APP ID from dashboard and replace
 export const CC_API_KEY = "API_KEY"; //Get your APP ID from dashboard and replace
-export const CC_API_REGION = "APP_REGION";  //Get your APP REGION from dashboard and replace
 
 /* 
     LISTENER CONSTANTS

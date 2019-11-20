@@ -250,7 +250,7 @@ class GroupConversation extends Component {
               ) {
                 attachmentData = m.attachment;
               }
-              else if(m.type === "location")
+              else if(m.type === "custom" && m.data.customData.latitude !== undefined)
               {
                   const lat = m.data.customData.latitude;
                   const lon = m.data.customData.longitude;

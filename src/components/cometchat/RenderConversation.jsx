@@ -281,7 +281,7 @@ function RenderIcomingMsg({
       );
     }
   }
-  else if (msgType === 'location') {
+  else if (msgType === 'custom' && msg.search("maps.google.com")) {
     messageContent = (
       <div className="msg-media-img location-marker ml-2 mr-1">
         <a
@@ -513,7 +513,7 @@ function RenderOutgoingMsg({
       );
     }
   }
-  else if (msgType === 'location') {
+  else if (msgType === 'custom' && msg.search("maps.google.com")) {
     if (msg === undefined || msg === "") {
       messageContent = (
         <div className="msg-bubble msg-bubble-deleted-msg ml-2 mr-1">

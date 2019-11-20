@@ -20,9 +20,11 @@ class ChatContainer extends Component {
   };
 
   componentDidMount() {
+  
     if (this.props.user.authToken !== "") {
-      CometChat.getLoggedinUser().then(user => {
-        this.setState({ user: user });
+      CometChat.getLoggedinUser().then(User => {
+        
+        this.setState({ user: User });
       });
     } else window.location = "/#/login";
 
