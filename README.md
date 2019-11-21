@@ -73,10 +73,15 @@ npm install
 <p style="clear:both; display:block;">
 	<a target="_blank" rel="noopener noreferrer" href="https://github.com/cometchat-pro-samples/javascript-reactjs-chat-app/blob/master/readme screenshots/constants.png"><img align="center" src="readme screenshots/create-v2-app.gif" style="max-width:100%;"></a>
 </p>
+
 2. Head over to the API Keys section and click on the Create API Key button
+
 3. Enter a name and select the scope as Auth Only
+
 4. Now note the API Key and App ID
+
 5. Replace  `APP_ID`, &nbsp; `API_KEY` and &nbsp; `APP_REGION` in *src/constants.js* with your APP ID, &nbsp; API KEY &nbsp;and&nbsp; APP Region respectively.<br/>
+
 
 Note : APP Region values to "us" or "eu".
 
