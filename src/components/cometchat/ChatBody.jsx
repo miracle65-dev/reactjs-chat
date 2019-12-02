@@ -162,7 +162,7 @@ export default class ChatBody extends Component {
           }
           this.scrollToBottom();
         },
-        onMessagesRead: messageReceipt => {
+        onMessageRead: messageReceipt => {
           let msghistory = [...this.state.msghistory];
           _.forEach(msghistory, function(value, key) {
             
@@ -172,7 +172,7 @@ export default class ChatBody extends Component {
           this.setState({ msghistory });
          
         },
-        onMessagesDelivered: messageReceipt => {
+        onMessageDelivered: messageReceipt => {
           let msghistory = [...this.state.msghistory];
 
           const index_in_history = _.findKey(msghistory, [
